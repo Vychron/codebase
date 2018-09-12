@@ -47,7 +47,8 @@ public class MineCounter : MonoBehaviour
     // Update the counter according to the amount of flags placed on the field
     void UpdateFlags()
     {
-        _mineCounter = _field.mines - _flags;
+        _mines = _field.mines;
+        _mineCounter = _mines - _flags;
         _mineCount = _mineCounter.ToString();
         if (_mineCount.Length < 3 && _mineCount[0] == "-"[0])
             while (_mineCount.Length < 3)
