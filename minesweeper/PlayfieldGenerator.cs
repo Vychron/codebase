@@ -46,15 +46,16 @@ public class PlayfieldGenerator : MonoBehaviour
     }
 
     // Applies the easter egg
-    void ApplyEaster(string theme)
+    void ApplyTheme(string theme)
     {
-        _theme = "Classic";
+        _theme = theme;
         GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/button");
     }
 
     void Start()
     {
-        EasterEgg += ApplyEaster;
+        StyleButton.NewStyle += ApplyTheme;
+        EasterEgg += ApplyTheme;
         MineCounter.WinGame += Win;
         OptionButton.Apply += Apply;
         Setup();
@@ -66,7 +67,7 @@ public class PlayfieldGenerator : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
             Restart();
         if (Input.GetMouseButtonDown(1))
-            EasterEgg(_theme);
+            EasterEgg("Classic");
     }
 
     // Updates the sprite of the button to indicate a win

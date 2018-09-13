@@ -11,18 +11,19 @@ public class Clock : MonoBehaviour
 
     void Start()
     {
+        StyleButton.NewStyle += ApplyTheme;
         MineCounter.WinGame += StopAllCoroutines;
         PlayfieldGenerator.Clear += Clear;
         PlayfieldGenerator.ActivateMines += StartTimer;
         MinefieldTile.Lose += StopAllCoroutines;
-        PlayfieldGenerator.EasterEgg += ApplyEaster;
+        PlayfieldGenerator.EasterEgg += ApplyTheme;
         SetTime();
     }
 
     // Applies the easter egg
-    void ApplyEaster(string theme)
+    void ApplyTheme(string theme)
     {
-        _theme = "Classic";
+        _theme = theme;
         SetTime();
     }
 

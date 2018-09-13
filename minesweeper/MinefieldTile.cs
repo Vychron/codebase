@@ -60,20 +60,21 @@ public class MinefieldTile : MonoBehaviour
     }
 
     // Applies the effects of the easter egg
-    void ApplyEaster(string theme)
+    void ApplyTheme(string theme)
     {
-        this.theme = "Classic";
+        this.theme = theme;
         UpdateTile();
     }
 
     // Adds all listeners at start of creation
     void Awake()
     {
+        StyleButton.NewStyle += ApplyTheme;
         Lose += Stop;
         MineCounter.WinGame += Stop;
         PlayfieldGenerator.Clear += Delete;
         PlayfieldGenerator.ActivateMines += Activate;
-        PlayfieldGenerator.EasterEgg += ApplyEaster;
+        PlayfieldGenerator.EasterEgg += ApplyTheme;
         Started += RemoveImmunity;
         _rend = GetComponent<MeshRenderer>();
     }
@@ -144,6 +145,7 @@ public class MinefieldTile : MonoBehaviour
     // Removes the tile from the field
     void Delete()
     {
+        StyleButton.NewStyle -= ApplyTheme;
         AddFlag = null;
         AddMine = null;
         RemoveFlag = null;
@@ -152,7 +154,7 @@ public class MinefieldTile : MonoBehaviour
         MineCounter.WinGame -= Stop;
         PlayfieldGenerator.Clear -= Delete;
         PlayfieldGenerator.ActivateMines -= Activate;
-        PlayfieldGenerator.EasterEgg -= ApplyEaster;
+        PlayfieldGenerator.EasterEgg -= ApplyTheme;
         Started -= RemoveImmunity;
         if (isMine)
             Detonate -= Explode;

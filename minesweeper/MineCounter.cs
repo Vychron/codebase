@@ -15,15 +15,16 @@ public class MineCounter : MonoBehaviour
 
     void Start()
     {
+        StyleButton.NewStyle += ApplyTheme;
         PlayfieldGenerator.Ready += Reset;
-        PlayfieldGenerator.EasterEgg += ApplyEaster;
+        PlayfieldGenerator.EasterEgg += ApplyTheme;
         Reset();
     }
 
     // Applies the easter egg
-    void ApplyEaster(string theme)
+    void ApplyTheme(string theme)
     {
-        _theme = "Classic";
+        _theme = theme;
         UpdateFlags();
     }
 
