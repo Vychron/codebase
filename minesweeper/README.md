@@ -15,6 +15,12 @@ A link to a playable version can be found here: [http://www.demijoseph.nl/work/m
 
 <h4>Changelog:</h4>
 <h6>
+  
+ <h4>V2.0.2 HOTFIX:</h4>
+--------
+<h4>Bug Fixes:</h4>
+- The 200 mines field can now be played without risk of crashing.
+--------
 
 <h4>V2.0.1 HOTFIX:</h4>
 --------
@@ -23,6 +29,8 @@ A link to a playable version can be found here: [http://www.demijoseph.nl/work/m
 <h4>Bug Fixes:</h4>
 - Flags are now properly counted.
 - The player can no longer click cells after the game has ended.
+<h4>Known Bugs</h4>
+- Clicking on a mine on the 200 mines field causes the game to crash.
 --------
 
 <h4>V2.0:</h4>
