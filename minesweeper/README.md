@@ -16,6 +16,16 @@ A link to a playable version can be found here: [http://www.demijoseph.nl/work/m
 <h4>Changelog:</h4>
 <h6>
   
+<h4>V2.0:</h4>
+--------
+<h4>Changes:</h4>
+- The "Theme" feature has finally been implemented, along with 2 new themes, enabling you to choose from 3 themes using the new buttons at the right side of the minefield
+<h4>To Do:</h4>
+- Add 'advanced' customization.<br>
+<br>
+That's it for a while, except for maybe adding new themes, I won't be updating the game until the end of October 2018 (or later).<br>
+--------
+  
  <h4>V2.0.2 HOTFIX:</h4>
 --------
 <h4>Bug Fixes:</h4>
