@@ -1,63 +1,82 @@
 ﻿using UnityEngine;
 /// <summary>
-/// A counter to help keeping track of how many mines you have uncovered, and how many you still need to find, given you've only marked mines with flags.
+/// Keeps track of the flags placed on the field.
+/// Using information of the flagged tiles, it determines when the player wins the game.
 /// </summary>
 public class MineCounter : MonoBehaviour
 {
-    [SerializeField] private GameObject _h, _t, _o; // hundreds, tens, ones
-    private PlayfieldGenerator _field;
-    private MinefieldTile[] _tiles;
-    private string _mineCount;
-    private int _mines, _flags, _mineCounter, _flaggedMines;
+    [SerializeField] private int _mines, _flags, _flaggedMines, _mineStringInt;
+    [SerializeField] private GameObject _h, _t, _o;
+    private string _mineString, _theme = "Default";
 
-    public void Start()
+    // Delegate Events
+    public delegate void OnWin();
+    public static event OnWin WinGame;
+
+    void Start()
     {
-        _field = GameObject.FindWithTag("Button").GetComponent<PlayfieldGenerator>();
-        _flags = 0;
+        PlayfieldGenerator.Ready += Reset;
+        PlayfieldGenerator.EasterEgg += ApplyEaster;
+        Reset();
+    }
+
+    // Applies the easter egg
+    void ApplyEaster(string theme)
+    {
+        _theme = "Classic";
         UpdateFlags();
     }
 
-    void Update()
+    // Resets the counter
+    void Reset()
     {
-        if (Input.GetMouseButtonDown(1))
+        MinefieldTile.AddFlag += Add;
+        MinefieldTile.RemoveFlag += Delete;
+        MinefieldTile.AddMine += AddMine;
+        MinefieldTile.RemoveMine += DeleteMine;
+        _mines = GameObject.FindWithTag("Button").GetComponent<PlayfieldGenerator>().mines;
+        _flags = 0;
+        _flaggedMines = 0;
+        UpdateFlags();
+    }
+
+    // Adds one to the flag count and determines a win
+    void Add()
+    {
+        _flags++;
+        UpdateFlags();
+        if (_flaggedMines == _flags && _flags == _mines)
         {
-            _flags = 0;
-            _flaggedMines = 0;
-            GameObject[] g = GameObject.FindGameObjectsWithTag("Tile");
-            _tiles = new MinefieldTile[g.Length];
-            for (int i = 0; i < _tiles.Length; i++)
-                {
-                    _tiles[i] = g[i].GetComponent<MinefieldTile>();
-                    if (_tiles[i].isFlagged)
-                    {
-                        _flags++;
-                        if (_tiles[i].mine)
-                            _flaggedMines++;
-                    }
-                }
-            if (_flags == _flaggedMines && _flags == _mines)
-            {
-                _field.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/win");
-                GameObject.FindWithTag("Clock").GetComponent<Clock>().End();
-            }
-            UpdateFlags();
+            WinGame();
         }
     }
 
-    // Update the counter according to the amount of flags placed on the field
+    // substracts one form the flag count
+    void Delete()
+    {
+        _flags--;
+        UpdateFlags();
+    }
+
+    // Adds one to the count on flagged mines
+    void AddMine() { _flaggedMines++; }
+
+    // Substracts one from the count on flagged mines
+    void DeleteMine() { _flaggedMines--; }
+
+    // Updates the counter according to the amount of mines and flags on the field
     void UpdateFlags()
     {
-        _mines = _field.mines;
-        _mineCounter = _mines - _flags;
-        _mineCount = _mineCounter.ToString();
-        if (_mineCount.Length < 3 && _mineCount[0] == "-"[0])
-            while (_mineCount.Length < 3)
-                _mineCount = " " + _mineCount;
+        _mineStringInt = _mines - _flags;
+        _mineString = _mineStringInt.ToString();
+        if (_mineString.Length < 3 && _mineString[0] == "-"[0])
+            while (_mineString.Length < 3)
+                _mineString = " " + _mineString;
         else
-            while (_mineCount.Length < 3)
-                _mineCount = "0" + _mineCount;    
-        _h.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Timer/Materials/" + _mineCount[0]);
-        _t.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Timer/Materials/" + _mineCount[1]);
-        _o.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Timer/Materials/" + _mineCount[2]);
-}
+            while (_mineString.Length < 3)
+                _mineString = "0" + _mineString;
+        _h.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/" + _mineString[0]);
+        _t.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/" + _mineString[1]);
+        _o.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/" + _mineString[2]);
+    }
 }

@@ -1,29 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 /// <summary>
-/// An extension to the playfield generator, when clicked, the game restarts using the configuration of the button
+/// Used for different game setups
 /// </summary>
 public class OptionButton : MonoBehaviour
 {
-    [Header("Custom game field size")]
-    [SerializeField] private int _height;
-    [SerializeField] private int _width;
-    [Header("Custom amount of mines")]
-    [SerializeField] private int _mines;
-    private PlayfieldGenerator _field;
+    [SerializeField] private int _height, _width, _mines;
 
-    void Start()
-    {
-        _field = GameObject.FindWithTag("Button").GetComponent<PlayfieldGenerator>();
-    }
+    //Delegate events
+    public delegate void NewSettings(int a, int b, int c);
+    public static event NewSettings Apply;
 
-    // Apply settings bound to button
-    void OnMouseDown()
-    {
-        _field.newHeight = _height;
-        _field.newWidth = _width;
-        _field.newMines = _mines;
-        _field.OnMouseDown();
-    }
+    // When clicked, applies new settings for the next game
+    void OnMouseDown() { Apply(_height, _width, _mines); }
 }

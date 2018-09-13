@@ -1,150 +1,219 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
-/// This script handles all the functionality of an independent tile,
-/// it keeps track of everything it needs to know,
-/// this includes whether it's a mine or not,
-/// detecting tiles surrounding it and determining whether they are mines or not,
-/// responding to being clicked on,
-/// connecting to each other in case of a "flood fill"
+/// Each tile manages itself and, in some occations, the cells adjecent to it.
+/// The cells know when they are clicked on and how to respond to clicks and each other.
 /// </summary>
 public class MinefieldTile : MonoBehaviour
 {
-    public Vector2 pos;
-    public bool mine, immune, isRevealed, isFlagged;
-
-    private List<MinefieldTile> _neighbourCells;
-    private MinefieldTile[] _tiles;
-    private MeshRenderer _rend;
+    [SerializeField] private bool _exploded, _isRevealed, _isFlagged, _canClick = true;
+    public bool isMine, isImmune, started;
     private RaycastHit2D _hit;
-    private GameObject _button;
-    private int _adjecentMines;
-    [SerializeField] private bool _deployed = false;
+    [SerializeField] private int _adjecentMines;
+    private List<MinefieldTile> _adjecentCells;
+    private MeshRenderer _rend;
+    public string theme;
 
+    // Delegade events
+    public delegate void OnLose();
+    public static event OnLose Lose;
 
-    // a typical mouse event, triggered when the mouse is hovering over it, and determines which mouse button is pressed before responding
-    void OnMouseOver()
+    public delegate void OnDetonate();
+    public static event OnDetonate Detonate;
+
+    public delegate void OnFirstCick();
+    public static event OnFirstCick FirstClick;
+
+    public delegate void OnStarted();
+    public static event OnStarted Started;
+
+    public delegate void AddFlags();
+    public static event AddFlags AddFlag;
+
+    public delegate void DelFlags();
+    public static event DelFlags RemoveFlag;
+
+    public delegate void AddMines();
+    public static event AddMines AddMine;
+
+    public delegate void DelMines();
+    public static event DelMines RemoveMine;
+
+    // After the first turn, the tiles should no longer get immunity from being mines
+    void RemoveImmunity()
     {
-        if (Input.GetMouseButtonDown(0))
-            if (!_deployed)
-                FirstMove();
-            else
-                if (!isFlagged)
-                {
-                    if (mine)
-                        Explode();
-                    else
-                        if (!isRevealed)
-                            Reveal();
-                }
-        if (Input.GetMouseButtonDown(1))
-            if (!isRevealed && _deployed)
-                Flag();
+        GameObject[] g = GameObject.FindGameObjectsWithTag("Tile");
+        for (int i = 0; i < g.Length; i++)
+            g[i].GetComponent<MinefieldTile>().started = true;
     }
 
-    // mark a tile with a flag, or remove the flag
-    void Flag()
-    {
-        isFlagged = !isFlagged;
-        if (isFlagged)
-            _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/flag");
-        else
-            _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/blank");
-    }
-
-    void Update()
-    {
-        if (!_deployed)
-            if (GameObject.FindWithTag("Button").GetComponent<PlayfieldGenerator>().deployed)
-                _deployed = true;
-    }
-
-    // reveal the tile, and if no mines are surrounding it, trigger a flood fill
-    public void Reveal()
-    {
-        isRevealed = true;
-        _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/" + _adjecentMines.ToString());
-        if (_adjecentMines == 0) 
-            for (int i = 0; i < _neighbourCells.Count; i++)
-                if (!_neighbourCells[i].isRevealed)
-                    _neighbourCells[i].Reveal();
-    }
-
-    // Detonate all Mines
+    // Forces all other mines on the field to explode
     void Explode()
     {
-        GameObject[] a = GameObject.FindGameObjectsWithTag("Tile");
-        _tiles = new MinefieldTile[a.Length];
-        for (int i = 0; i < a.Length; i++)
-            _tiles[i] = a[i].GetComponent<MinefieldTile>();
-        for (int i = 0; i < _tiles.Length; i++)
+        if (Detonate != null && !_exploded)
         {
-            _tiles[i].isRevealed = true;
-            if (_tiles[i].mine)
-            {    
-                if (_tiles[i].isFlagged)
-                    _tiles[i].GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/dismantled");
+            _exploded = true;
+            if (_isFlagged)
+                _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/dismantled");
+            else
+                _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/mine");
+            Detonate();
+        }
+    }
+
+    // Applies the effects of the easter egg
+    void ApplyEaster(string theme)
+    {
+        this.theme = "Classic";
+        UpdateTile();
+    }
+
+    // Adds all listeners at start of creation
+    void Awake()
+    {
+        Lose += Stop;
+        MineCounter.WinGame += Stop;
+        PlayfieldGenerator.Clear += Delete;
+        PlayfieldGenerator.ActivateMines += Activate;
+        PlayfieldGenerator.EasterEgg += ApplyEaster;
+        Started += RemoveImmunity;
+        _rend = GetComponent<MeshRenderer>();
+    }
+
+    // After all mines have been placed, the tile will detect their surroundings for their final phase of the setup
+    void Activate()
+    {
+        if (isMine)
+            Detonate += Explode;
+        _adjecentCells = new List<MinefieldTile>();
+        Examine(false);
+    }
+
+    // how the tile responses to the mouse
+    void OnMouseOver()
+    {
+        if (_canClick)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (FirstClick != null && !started)
+                {
+                    isImmune = true;
+                    Examine(true);
+                    FirstClick();
+                    Reveal();
+                    RemoveImmunity();
+                }
                 else
-                    _tiles[i].GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/bomb");
+                {
+                    if (!_isFlagged)
+                    {
+                        if (isMine)
+                        {
+                            Explode();
+                            _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/explode");
+                            if (Lose != null)
+                                Lose();
+                        }
+                        else
+                            Reveal();
+                    }
+                }
+            }
+            if (Input.GetMouseButtonDown(1) && !_isRevealed && started)
+            {
+                if (_isFlagged)
+                {
+                    if (isMine)
+                        RemoveMine();
+                    RemoveFlag();
+                }
+                else
+                {
+                    if (isMine)
+                        AddMine();
+                    AddFlag();
+                }
+                _isFlagged = !_isFlagged;
+                UpdateTile();
             }
         }
-        _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/explode");
-        _button.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/lose");
-        GameObject.FindWithTag("Clock").GetComponent<Clock>().End();
     }
 
-    // Executed only once, but AFTER all cells are created, instead of at the start
-    public void Activate()
+    // Disables the tile, it will no longer be clickable
+    void Stop() { _canClick = false; }
+
+    // Removes the tile from the field
+    void Delete()
     {
-        _button = GameObject.FindGameObjectWithTag("Button");
-        _button.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/button");
-        _rend = GetComponent<MeshRenderer>();
-        _neighbourCells = new List<MinefieldTile>();
-        if (!mine)
-        {
-            CheckAdjecent(-1, -1, false);
-            CheckAdjecent(-1, 0, false);
-            CheckAdjecent(-1, 1, false);
-            CheckAdjecent(0, -1, false);
-            CheckAdjecent(0, 1, false);
-            CheckAdjecent(1, -1, false);
-            CheckAdjecent(1, 0, false);
-            CheckAdjecent(1, 1, false);
-        }
+        AddFlag = null;
+        AddMine = null;
+        RemoveFlag = null;
+        RemoveMine = null;
+        Lose -= Stop;
+        MineCounter.WinGame -= Stop;
+        PlayfieldGenerator.Clear -= Delete;
+        PlayfieldGenerator.ActivateMines -= Activate;
+        PlayfieldGenerator.EasterEgg -= ApplyEaster;
+        Started -= RemoveImmunity;
+        if (isMine)
+            Detonate -= Explode;
+        Destroy(gameObject);
     }
 
-    // Shoot a ray to detect adjecent tiles, adapt to their properties and grant first-turn immunity from becoming a mine
-    void CheckAdjecent(int a, int b, bool setImmune)
+    // The tile will reveal itself and, if no mines surround it, will trigger a flood fill
+    void Reveal()
+    {
+        _isRevealed = true;
+        _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/" + _adjecentMines.ToString());
+        if (_adjecentMines == 0)
+            for (int i = 0; i < _adjecentCells.Count; i++)
+                if (!_adjecentCells[i]._isRevealed)
+                    _adjecentCells[i].Reveal();
+    }
+
+    // The tile will examine the tiles surrounding it
+    void Examine(bool makeImmune)
+    {
+        CastRay(-1, -1, makeImmune);
+        CastRay(-1, 0, makeImmune);
+        CastRay(-1, 1, makeImmune);
+        CastRay(0, -1, makeImmune);
+        CastRay(0, 1, makeImmune);
+        CastRay(1, -1, makeImmune);
+        CastRay(1, 0, makeImmune);
+        CastRay(1, 1, makeImmune);
+    }
+
+    // The tile examines an adjecent tile to determine whether it's a mine or not, or grant it immunity if it's the first turn
+    void CastRay(int a, int b, bool makeImmune)
     {
         _hit = Physics2D.Raycast(transform.position, new Vector2(a / 1.2f, b / 1.2f));
         if (_hit.collider != null && _hit.collider.tag == "Tile")
         {
-            if (setImmune)
-                _hit.collider.GetComponent<MinefieldTile>().immune = true;
+            if (makeImmune)
+                _hit.collider.GetComponent<MinefieldTile>().isImmune = true;
             else
             {
-                if (_hit.collider.GetComponent<MinefieldTile>().mine)
+                if (_hit.collider.GetComponent<MinefieldTile>().isMine)
                     _adjecentMines++;
                 else
-                    _neighbourCells.Add(_hit.collider.GetComponent<MinefieldTile>());
+                    _adjecentCells.Add(_hit.collider.GetComponent<MinefieldTile>());
             }
-
-        }          
+        }
     }
 
-    // The first move is obligated to reveal at least a bit of the field, therefor, this move must be protected from all mines
-    void FirstMove()
+    // Update the current sprite the tile uses
+    void UpdateTile()
     {
-        immune = true;
-        CheckAdjecent(-1, -1, true);
-        CheckAdjecent(-1, 0, true);
-        CheckAdjecent(-1, 1, true);
-        CheckAdjecent(0, -1, true);
-        CheckAdjecent(0, 1, true);
-        CheckAdjecent(1, -1, true);
-        CheckAdjecent(1, 0, true);
-        CheckAdjecent(1, 1, true);
-        StartCoroutine(GameObject.FindWithTag("Button").GetComponent<PlayfieldGenerator>().Mineify());
-        Reveal();
+        if (!_isRevealed)
+        {
+            if (_isFlagged)
+                _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/flag");
+            else
+                _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/blank");
+        }
+        else
+            _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/" + _adjecentMines.ToString());     
     }
 }

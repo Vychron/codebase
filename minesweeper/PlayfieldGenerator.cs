@@ -1,99 +1,126 @@
 ﻿using System.Collections;
 using UnityEngine;
 /// <summary>
-/// One button to set up the entire game, applies the field size to generate the game, and adds the mines as soon as the first tile has been revealed
+/// The generator takes responsibility for generating the minefield whenever it should.
+/// It also functions as a button to trigger it directly and restart the game.
 /// </summary>
 public class PlayfieldGenerator : MonoBehaviour
 {
-    [Header("Define the height and width of the minefield")]
-    public int height = 20;
-    public int width = 25;
-
-    [HideInInspector] public int newHeight, newWidth, newMines;
-
-    public GameObject[,] pos;
-
-    [Header("Mine count")]
-    public int mines = 50;
-    public int mineCount = 0;
-    
-    [Header("Tile offset")]
+    public int mines;
+    [SerializeField] private int _height, _width, _mineCount;
     [SerializeField] private float _offset;
-
-    [Header("Tile Prefab")]
     [SerializeField] private GameObject _tile;
+    private bool _mineified;
+    private string _theme = "Default";
 
-    private Clock _clock;
-    private MineCounter _counter;
 
-    [HideInInspector]
-    public bool deployed = false;
+    // Delegate Events
+    public delegate void Easter(string theme);
+    public static event Easter EasterEgg;
+
+    public delegate void OnReady();
+    public static event OnReady Ready;
+
+    public delegate void RestartGame();
+    public static event RestartGame Clear;
+
+    public delegate void EnableMines();
+    public static event EnableMines ActivateMines;
+
+    // Applies new settings for the next game
+    void Apply(int a, int b, int c)
+    {
+        _height = a;
+        _width = b;
+        mines = c;
+        Restart();
+    }
+
+    // Start a new game
+    void Restart()
+    {
+        _mineCount = 0;
+        if (Clear != null)
+            Clear();
+        Setup();
+    }
+
+    // Applies the easter egg
+    void ApplyEaster(string theme)
+    {
+        _theme = "Classic";
+        GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/button");
+    }
 
     void Start()
     {
-        newHeight = height;
-        newWidth = width;
-        newMines = mines;
-        _clock = GameObject.FindWithTag("Clock").GetComponent<Clock>();
-        _counter = GameObject.FindWithTag("Counter").GetComponent<MineCounter>();
-        pos = new GameObject[ width, height];
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
+        EasterEgg += ApplyEaster;
+        MineCounter.WinGame += Win;
+        OptionButton.Apply += Apply;
+        Setup();
+    }
+
+    // Determines how the button responds to the mouse
+    void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(0))
+            Restart();
+        if (Input.GetMouseButtonDown(1))
+            EasterEgg(_theme);
+    }
+
+    // Updates the sprite of the button to indicate a win
+    void Win() {GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/win");}
+
+    // Set up the game
+    void Setup()
+    {
+        MinefieldTile.Lose += Lose;
+        MinefieldTile.FirstClick += Started;
+        _mineified = false;
+        GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/button");
+        for (int i = 0; i < _width; i++)
+            for (int j = 0; j < _height; j++)
             {
                 GameObject g = Instantiate(_tile) as GameObject;
-                g.transform.position = new Vector2(_offset * i - _offset * width / 2 + _offset / 2, _offset * j - _offset * height / 2 - _offset * 0.75f);
-                g.GetComponent<MinefieldTile>().pos = new Vector2(i, j);
-                pos[i, j] = g;
+                g.GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + _theme + "/Materials/blank");
+                g.transform.position = new Vector2(_offset * i - _offset * _width / 2 + _offset / 2, _offset * j - _offset * _height / 2 - _offset * 0.75f);
+                g.GetComponent<MinefieldTile>().theme = _theme;
             }
-        _clock.Clear();
+        if (Ready != null)
+            Ready();
     }
 
-    // Reset the game by pressing the button
-    public void OnMouseDown()
+    // Changes the sprite of the button to indicate a loss
+    void Lose() {GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/UI/" + _theme + "/Materials/lose");}
+
+    // A one-time event to tell itself to add mines
+    void Started()
     {
-        for (int i = 0; i < width; i++)
+        if (!_mineified)
         {
-            for (int j = 0; j < height; j++)
-                Destroy(pos[i, j]);
+            StartCoroutine(Mineify());
+            _mineified = true;
         }
-            
-        deployed = false;
-        mineCount = 0;
-        height = newHeight;
-        width = newWidth;
-        mines = newMines;
-        _counter.Start();
-        Start();
-        GetComponent<MeshRenderer>().sharedMaterial = Resources.Load<Material>("My Sweeper/Materials/button");
-
     }
 
-    // Turn tiles into mines
-    public IEnumerator Mineify()
+    // Loops itself until enough mines are placed
+    IEnumerator Mineify()
     {
-        deployed = true;
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                if (mineCount < mines)
-                    if (Random.Range(0f, 1f) < 0.1)
-                        if (!pos[i, j].GetComponent<MinefieldTile>().mine && !pos[i,j].GetComponent<MinefieldTile>().immune)
-                        {
-                            pos[i, j].GetComponent<MinefieldTile>().mine = true;
-                            mineCount++;
-                        }
-        if (mineCount < mines)
+        GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            MinefieldTile t = tiles[i].GetComponent<MinefieldTile>();
+            if (_mineCount < mines && Random.Range(0f, 1f) > 0.95f && !t.isMine && !t.isImmune)
+            {
+                t.isMine = true;
+                _mineCount++;
+            }
+        }
+        if (_mineCount < mines)
             StartCoroutine(Mineify());
         else
-            Deploy();
+            ActivateMines();
         yield return null;
-    }
-    
-    // Finish generation and start the game
-    void Deploy()
-    {
-        for (int i = 0; i < width; i++)
-            for (int j = 0; j < height; j++)
-                pos[i, j].GetComponent<MinefieldTile>().Activate();
-        _clock.Begin();
     }
 }
