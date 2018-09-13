@@ -50,14 +50,12 @@ public class MinefieldTile : MonoBehaviour
     // Forces all other mines on the field to explode
     void Explode()
     {
-        if (Detonate != null && !_exploded)
+        if (Detonate != null)
         {
-            _exploded = true;
             if (_isFlagged)
                 _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/dismantled");
             else
                 _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/mine");
-            Detonate();
         }
     }
 
@@ -110,7 +108,7 @@ public class MinefieldTile : MonoBehaviour
                     {
                         if (isMine)
                         {
-                            Explode();
+                            Detonate();
                             _rend.sharedMaterial = Resources.Load<Material>("My Sweeper/Tiles/" + theme + "/Materials/explode");
                             if (Lose != null)
                                 Lose();
