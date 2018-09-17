@@ -1,0 +1,52 @@
+Dagelijkse Log:
+
+--------
+Vrijdag - Week 2
+--------
+
+--------
+Donderdag - Week 2
+--------
+
+--------
+Woensdag - Week 2
+--------
+
+--------
+Dinsdag - Week 2
+--------
+
+--------
+Maandag - Week 2
+--------
+
+--------
+Vrijdag - Week 1
+--------
+
+--------
+Donderdag - Week 1
+--------
+
+--------
+Woensdag - Week 1
+--------
+
+--------
+Dinsdag - Week 1
+--------
+
+--------
+Maandag - Week 1
+--------
+Als eerste heb uit eigen kennis geprobeerd een algoritme te schrijven voor het procedureel genereren van de map,
+wat (zoals ik verwachtte) niet zo soepel liep als ik hoopte.
+Vervolgens ben ik rond gaan snuffelen op internet en kwam er al direct achter dat mijn aanpak erg afweek van alleen al de thumbnails van tutorials.
+Om een idee te krijgen heb ik een van de video's geopend¹ en heb ik mij geïnformeerd over het principe van het gebruikte algoritme,
+zonder naar verdere uitleg te kijken of luisteren omdat ik daar te eigenwijs voor ben en het eerst zelf wil uitvogelen en uitleg als back-up plan wil gebruiken.
+Wat ik heb begrepen van het principe is dat er vanuit één startpunt eerst een kamer gegenereerd wordt, en vervolgens daarop uitgebreid wordt, dus deze kennis nieuwe kennis heb ik getest door een veld te genereren met middenin een kamer, die aan elke kant om zich heen een gang aan kan maken met een semi-willekeurige lengte, en aan het einde vervolgens een kans heeft om een nieuwe kamer te genereren, door het zelfde algoritme te gebruiken als de eerste kamer.
+Hierdoor breidt de map die gemaakt wordt zich willekeurig uit.
+Hoofdzaak is nu om de grootte van de map te beperken tot binnen het veld.
+
+Bronnen:
+¹https://unity3d.com/learn/tutorials/topics/scripting/basic-2d-dungeon-generation
