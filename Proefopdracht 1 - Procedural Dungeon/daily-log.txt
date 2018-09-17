@@ -49,4 +49,4 @@ Hierdoor breidt de map die gemaakt wordt zich willekeurig uit.
 Hoofdzaak is nu om de grootte van de map te beperken tot binnen het veld.
 
 Bronnen:
-¹https://unity3d.com/learn/tutorials/topics/scripting/basic-2d-dungeon-generation
+¹https://youtu.be/wnoLaui3uO4
