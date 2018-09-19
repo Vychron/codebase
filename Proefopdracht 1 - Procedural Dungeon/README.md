@@ -27,12 +27,12 @@ Je hebt grofweg 2 weken, hoe deel je deze twee weken in. Wat plan je wanneer om 
 | | maandag | dinsdag | woensdag | donderdag | vrijdag |
 | --- | --- | --- | --- | --- | --- |
 |week 1 |Onderzoek procedural generation methode|Basis generatie werkend|Werkend prototype generator|Player actions (movement, attack), placeholder enemy|Enemy AI|
-|week 2 |Enemy + deco object spawning|Game Art|Finishing touch + upload|Reflectie+portfolio|Portfolio|
+|week 2 |Enemy- + deco object spawning|Game Art|Finishing touch + upload|Reflectie+portfolio|Portfolio|
 
 ## Bronnen
 Welke bronnen heb je gebruikt? Zowel youtube filmpjes als artikelen
 Om een idee te krijgen van hoe een algoritme van procedural generation werkt, heb ik gekeken naar de uitvoering hiervan in een Unity tutorial.¹
+Voor het eerst heb ik besloten dat een pauze functie nodig was, maar had geen idee hoe dit werkt. een google search heeft mij als snel antwoord gegeven.²
 
 - [¹Level Generation tutorial](https://youtu.be/wnoLaui3uO4)
-- [Alleatoric Algorithms](link)
-- [Flood-Fill Wikipedia](link)
+- [²Pausing the game](https://forum.unity.com/threads/pausing-a-game-without-settiing-timescale-to-0.55395/)
