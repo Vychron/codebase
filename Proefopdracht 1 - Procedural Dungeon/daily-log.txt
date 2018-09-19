@@ -31,10 +31,15 @@ Donderdag - Week 1
 --------
 Woensdag - Week 1
 --------
+De Array waarin de map gecreëerd wordt is static gemaakt, zodat deze volledig toegankelijk is voor de generatoren van kamers en gangen. Een snelle Google search voor pauzeren² heeft mij geleerd hoe update tijd te beïnvloeden is zonder een UI als een pauzescherm mee te belemmeren.
+Een pauzemenu is toegevoegd (escape) om natuurlijk te pauzeren en te hervatten, en om opnieuw te starten. Een optie voor afsluiten ziet er overbodig uit gezien het eindproduct in WebGL formaat beschikbaar gesteld wordt.
 
 --------
 Dinsdag - Week 1
 --------
+Bij het plaatsen van de gangen heb ik een extra controle toegevoegd om te kijken hoe dicht deze op de rand van de map zit: wanneer een kamer te dicht bij een rand zit, kan er alleen een gang in de tegengestelde richting aangemaakt worden, waardoor deze nooit buiten de randen van de map kunnen komen.
+Verder zijn er 2 statische variabelen aangemaakt bedoeld om de uitbreiding van de map te beperken, deze variabelen beïnvloeden de grootte van de kanzen voor het plaatsen van nieuwe kamers en gangen, en krimpen bij elke kamer die geplaatst wordt. Zo wordt de map (meestal) groot genoeg om te vullen met uitdaging, maar zal deze vrijwel nooit te klein zijn. Een minimale kans bestaat nog altijd dat er geen gangen geplaatst worden.
+Een statische Input Manager is aangemaakt om alle input naast de muis op te vangen.
 
 --------
 Maandag - Week 1
@@ -50,3 +55,4 @@ Hoofdzaak is nu om de grootte van de map te beperken tot binnen het veld.
 
 Bronnen:
 ¹https://youtu.be/wnoLaui3uO4
+²https://forum.unity.com/threads/pausing-a-game-without-settiing-timescale-to-0.55395/
