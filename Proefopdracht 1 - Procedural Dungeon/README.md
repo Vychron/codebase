@@ -33,6 +33,8 @@ Je hebt grofweg 2 weken, hoe deel je deze twee weken in. Wat plan je wanneer om 
 Welke bronnen heb je gebruikt? Zowel youtube filmpjes als artikelen
 Om een idee te krijgen van hoe een algoritme van procedural generation werkt, heb ik gekeken naar de uitvoering hiervan in een Unity tutorial.¹
 Voor het eerst heb ik besloten dat een pauze functie nodig was, maar had geen idee hoe dit werkt. een google search heeft mij als snel antwoord gegeven.²
+Om het concept van object pooling beter te begrijpen, heb ik hier een tutorial over opgezocht³.
 
 - [¹Level Generation tutorial](https://youtu.be/wnoLaui3uO4)
 - [²Pausing the game](https://forum.unity.com/threads/pausing-a-game-without-settiing-timescale-to-0.55395/)
+- [³Object Pooling](https://youtu.be/9-zDOJllPZ8)
