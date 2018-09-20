@@ -27,6 +27,11 @@ Vrijdag - Week 1
 --------
 Donderdag - Week 1
 --------
+Heb wat rond zitten spelen met de camera en heb een zoom-in gemaakt tijdens het genereren van de map.
+Deze zoom-in is aangevuld met een fade-out van het licht, waarna deze vervangen wordt met een spotlicht om de speler heen.
+De speler kan rondlopen met WASD en de pijltoetsen.
+De speler kan schieten door de linker muisknop ingedrukt te houden.
+Voor zuinig gebruik heb ik opgezocht hoe object pooling werkt³, omdat ik het concept wel kende, maar niet wist hoe ik het uit moet voeren.
 
 --------
 Woensdag - Week 1
@@ -56,3 +61,4 @@ Hoofdzaak is nu om de grootte van de map te beperken tot binnen het veld.
 Bronnen:
 ¹https://youtu.be/wnoLaui3uO4
 ²https://forum.unity.com/threads/pausing-a-game-without-settiing-timescale-to-0.55395/
+³https://youtu.be/9-zDOJllPZ8
