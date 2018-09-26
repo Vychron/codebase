@@ -7,7 +7,7 @@ Mijn doel was om er een volledig functionele (simpele) dungeon crawler van te ma
 ## Features
 Wanneer je een specifiek onderdeel wilt uitlichten kun je dat in deze sectie benoemen.
 
-- [Awesome Fade-in](https://github.com/Vychron/codebase/blob/master/Proefopdracht%201%20-%20Procedural%20Dungeon/UI%20%26%20Camera/TopDownCamera.cs) tijdens de set-up.
+- [Awesome Startup Transitie](https://github.com/Vychron/codebase/blob/master/Proefopdracht%201%20-%20Procedural%20Dungeon/UI%20%26%20Camera/TopDownCamera.cs)
 - [4-Step Setup](https://github.com/Vychron/codebase/tree/master/Proefopdracht%201%20-%20Procedural%20Dungeon/Level)
 - [To&Fro Projectiles](https://github.com/Vychron/codebase/blob/master/Proefopdracht%201%20-%20Procedural%20Dungeon/Player/Bullet.cs)
 
