@@ -12,6 +12,7 @@ public class TopDownCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        ready = false;
         _cam = GetComponent<Camera>();
         StartCoroutine(ZoomIn());
     }
@@ -32,11 +33,12 @@ public class TopDownCamera : MonoBehaviour
         _cam.transform.eulerAngles = Vector3.zero;
         GetComponentInParent<PlayerMovement>().enabled = true;
         GetComponentInParent<PlayerShoot>().enabled = true;
+        ready = true;
         while (_spot.intensity > 1)
         {
             _spot.intensity = Mathf.Lerp(_spot.intensity, 1, 0.03f);
             yield return new WaitForSeconds(0.01f * Time.deltaTime);
         }
-        ready = true;
+        
     }
 }
