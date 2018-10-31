@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-    private GameObject gen;
     public Vector2Int gridPos;
     public int offset;
     public bool blocked;
@@ -12,7 +9,6 @@ public class Cell : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        gen = GameObject.FindWithTag("Generator");
         if (blocked)
         {
             SetColor(1, 0, 0);

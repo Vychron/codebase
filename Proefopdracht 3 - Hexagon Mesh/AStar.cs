@@ -27,13 +27,16 @@ public class AStar : MonoBehaviour
         {
             if (temp[i].open && !closedList.Contains(temp[i]))
             {
-                temp[i].index = indexNumber;
-                temp[i].parentNode = parent;
-                temp[i].H = Mathf.RoundToInt(Vector3.Distance(temp[i].position, target));
-                temp[i].G = parent.F + 1;
-                temp[i].F = temp[i].H + temp[i].G;
-                openList.Add(temp[i]);
-                indexNumber++;
+                if (temp[i].F < parent.F + 1)
+                {
+                    temp[i].index = indexNumber;
+                    temp[i].parentNode = parent;
+                    temp[i].H = Mathf.RoundToInt(Vector3.Distance(temp[i].position, target));
+                    temp[i].G = parent.F + 1;
+                    temp[i].F = temp[i].H + temp[i].G;
+                    openList.Add(temp[i]);
+                    indexNumber++;
+                }
             }
             else
             {
