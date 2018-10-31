@@ -5,7 +5,7 @@ Het doel van de opdracht was om zelf meshes te kunnen maken die niet standaard i
 
 ## Features
 - [Hexagon Mesh](https://github.com/Vychron/codebase/blob/master/Proefopdracht%203%20-%20Hexagon%20Mesh/HexMesh.cs)
-- [PathFinding Algoritme](https://github.com/Vychron/codebase/blob/Proefopdracht%203%20-%20Hexagon%20Mesh/AStar.cs)
+- [PathFinding Algoritme](https://github.com/Vychron/codebase/blob/master/Proefopdracht%203%20-%20Hexagon%20Mesh/AStar.cs)
 
 ## Software Anaylse 
 Ik heb vooral Unity onderzocht, gezien de opdracht bedoeld was om in Unity uit te voeren, maar ik heb ook gekeken naar mijn goede vriend Javascript en GameMaker Studio.
