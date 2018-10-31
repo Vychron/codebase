@@ -32,3 +32,7 @@ Bij het zoeken naar manieren om A* toe te passen bleek al snel dat er vooral geb
 - [¹Custom meshes in Unity](https://www.youtube.com/watch?v=5c0MatF6G2M)
 - [²Basics of A*](https://www.raywenderlich.com/3016-introduction-to-a-pathfinding)
 - [³Usage of Nodes](https://www.youtube.com/watch?v=nhiFx28e7JY&t=1)
+
+## Gebruiksaanwijzing:
+Linkermuisknop - Kies startlocatie van pad.<br>
+Rechtermuisknop - Kies eindlocatie van pad.<br>
