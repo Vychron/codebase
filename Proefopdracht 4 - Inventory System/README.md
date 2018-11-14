@@ -39,3 +39,11 @@ Hiervoor heb ik de volgende bronnen geraadpleegd:
 
 - [Check if position isn't null](https://stackoverflow.com/questions/3949113/check-if-element-at-position-x-exists-in-the-list)
 - [Convert Texture2D to Sprite](https://answers.unity.com/questions/650552/convert-a-texture2d-to-sprite.html)
+
+## Instructies/Besturing
+Loop tegen blokjes aan om deze op te rapen.<br>
+- W/S: Vooruit/achteruit
+- A/D: Draaien
+- E:   Inventaris openen/sluiten
+- 1-8: Hotbar slot selecteren
+- Linker muisknop: Voorwerp gebruiken/voorwerp in inventaris selecteren
