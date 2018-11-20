@@ -27,7 +27,7 @@ What do you want yo achieve with this project? Formulate short, steady and achie
 - Being able to create practical, re-useable script that contain all necessary functionality.
 - Making an all-purpose inventpry that can be set up completely within the inspector.
 
-## Planning 
+## Schedule 
 You have about 2 weeks, how do you schedule those weeks. When do you schedule to do what exactly?
 
 | | Monday | Tuesday | Wednesday | Thursday | Friday |
