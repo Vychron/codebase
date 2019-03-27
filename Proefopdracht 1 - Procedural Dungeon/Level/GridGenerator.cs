@@ -23,9 +23,12 @@ public class GridGenerator : MonoBehaviour
                 _o = Instantiate(_obj, gameObject.transform);
                 _o.transform.position = new Vector3(i - width * _o.transform.localScale.x / 2, j - height * _o.transform.localScale.y / 2, -1.5f);
                 _o.GetComponent<RoomGenerator>().pos = new Vector2(i, j);
+                _o.SetActive(false);
                 objs[i][j] = _o;
             }
         }
-        objs[Mathf.RoundToInt(width / 2)][Mathf.RoundToInt(width / 2)].GetComponent<RoomGenerator>().Generate();
+        _o = objs[Mathf.RoundToInt(width / 2)][Mathf.RoundToInt(width / 2)];
+        _o.SetActive(true);
+        _o.GetComponent<RoomGenerator>().Generate();
     }
 }

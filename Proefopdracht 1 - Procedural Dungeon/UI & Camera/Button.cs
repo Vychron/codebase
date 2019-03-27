@@ -15,12 +15,21 @@ public class Button : MonoBehaviour
     public void Restart()
     {
         UI.enemies = 0;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     // Forfeit and go to end screen
     public void Stop()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
+    }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void Options()
+    {
+        SceneManager.LoadScene(3);
     }
 }

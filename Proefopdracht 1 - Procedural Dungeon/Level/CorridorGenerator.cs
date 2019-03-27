@@ -23,12 +23,16 @@ public class CorridorGenerator : MonoBehaviour
     {
         if (position.x < GridGenerator.width - 37 && position.y < GridGenerator.height - 37 && position.x > 37) //Up (checks up, left and right)
             borders[0] = true;
+
         if (position.x < GridGenerator.width - 37 && position.y < GridGenerator.height - 37 && position.y > 37) //Right (checks up, down and right)
             borders[1] = true;
+
         if (position.x < GridGenerator.width - 37 && position.y > 37 && position.x > 37) //Down (checks down, left and right)
             borders[2] = true;
+
         if (position.x > 37 && position.y < GridGenerator.height - 37 && position.y > 37) //Left (checks up, down and left)
             borders[3] = true;
+
         return borders;
     }
 
@@ -44,6 +48,7 @@ public class CorridorGenerator : MonoBehaviour
             g.ToFloor();
             if (i == _length - 1 && Random.Range(0f, 1f) <= 1/GridGenerator.Rooms)
                 g.Generate();
+
             yield return new WaitForSeconds(0.01f*Time.deltaTime);
         }
     }
